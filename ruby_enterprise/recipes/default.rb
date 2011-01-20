@@ -5,7 +5,7 @@
 # Author:: Joshua Timberman (<joshua@opscode.com>)
 # Author:: Sean Cribbs (<seancribbs@gmail.com>)
 # Author:: Michael Hale (<mikehale@gmail.com>)
-# 
+#
 # Copyright:: 2009-2010, Opscode, Inc.
 # Copyright:: 2009, Sean Cribbs
 # Copyright:: 2009, Michael Hale
@@ -27,7 +27,7 @@ include_recipe "build-essential"
 
 packages = value_for_platform(
     ["centos","redhat","fedora"] => {'default' => ['readline-devel', 'openssl-devel', 'patch']},
-    "default" => ['libssl-dev', 'libreadline5-dev']
+    "default" => ['libssl-dev', 'libreadline5-dev', 'libcurl4-openssl-dev']
   )
 
 packages.each do |pkg|
