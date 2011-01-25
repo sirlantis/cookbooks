@@ -25,6 +25,14 @@ else
   server_fqdn = node.fqdn
 end
 
+wordpress_server_name = server_fqdn
+wordpress_server_aliases = node.fqdn
+
+if node[:wordpress].has_key?(:server_name)
+  wordpress_server_name    = node[:wordpress][:server_name]
+  wordpress_server_aliases = node[:wordpress][:server_aliases]
+end
+
 remote_file "#{Chef::Config[:file_cache_path]}/wordpress-#{node[:wordpress][:version]}.tar.gz" do
   checksum node[:wordpress][:checksum]
   source "http://wordpress.org/wordpress-#{node[:wordpress][:version]}.tar.gz"
@@ -32,8 +40,8 @@ remote_file "#{Chef::Config[:file_cache_path]}/wordpress-#{node[:wordpress][:ver
 end
 
 directory "#{node[:wordpress][:dir]}" do
-  owner "root"
-  group "root"
+  owner node[:apache][:user]
+  group node[:apache][:user]
   mode "0755"
   action :create
 end
@@ -90,8 +98,8 @@ end
 
 template "#{node[:wordpress][:dir]}/wp-config.php" do
   source "wp-config.php.erb"
-  owner "root"
-  group "root"
+  owner node[:apache][:user]
+  group node[:apache][:user]
   mode "0644"
   variables(
     :database        => node[:wordpress][:db][:database],
@@ -105,11 +113,17 @@ template "#{node[:wordpress][:dir]}/wp-config.php" do
   notifies :write, resources(:log => "Navigate to 'http://#{server_fqdn}/wp-admin/install.php' to complete wordpress installation")
 end
 
+ruby_block "enforce-ownership" do
+  block do
+    FileUtils.chown_R(node[:apache][:user], node[:apache][:user], node[:wordpress][:dir])
+  end
+  not_if "test `stat -c %U index.php` = '#{node[:apache][:user]}'"
+end
+
 include_recipe %w{php::php5 php::module_mysql}
 
 web_app "wordpress" do
-  template "wordpress.conf.erb"
   docroot "#{node[:wordpress][:dir]}"
-  server_name server_fqdn
-  server_aliases node.fqdn
+  server_name wordpress_server_name
+  server_aliases (wordpress_server_aliases || [])
 end
