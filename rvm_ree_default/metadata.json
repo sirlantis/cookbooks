@@ -1,0 +1,45 @@
+{
+  "recipes": {
+    "rvm_ree_default": "Installs RVM and REE and makes REE the default"
+  },
+  "attributes": {
+  },
+  "conflicting": {
+  },
+  "dependencies": {
+    "build-essential": [
+
+    ]
+  },
+  "providing": {
+  },
+  "maintainer": "Opscode, Inc.",
+  "long_description": "",
+  "replacing": {
+  },
+  "platforms": {
+    "fedora": [
+
+    ],
+    "centos": [
+
+    ],
+    "ubuntu": [
+
+    ],
+    "redhat": [
+
+    ]
+  },
+  "license": "Apache 2.0",
+  "version": "0.0.1",
+  "maintainer_email": "cookbooks@opscode.com",
+  "groupings": {
+  },
+  "recommendations": {
+  },
+  "name": "rvm_ree_default",
+  "description": "http://www.agileweboperations.com/chef-rvm-ruby-enterprise-edition-as-default-ruby",
+  "suggestions": {
+  }
+}
