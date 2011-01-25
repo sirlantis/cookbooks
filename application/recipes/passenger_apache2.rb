@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-app = node.run_state[:current_app] 
+app = node.run_state[:current_app]
 
 include_recipe "apache2"
 include_recipe "apache2::mod_ssl"
@@ -29,7 +29,7 @@ server_aliases = [ "#{app['id']}.#{node[:domain]}", node.fqdn ]
 if node.has_key?("ec2")
   server_aliases << node.ec2.public_hostname
 end
-  
+
 web_app app['id'] do
   docroot "#{app['deploy_to']}/current/public"
   template "#{app['id']}.conf.erb"

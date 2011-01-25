@@ -73,7 +73,7 @@ directory "#{app['deploy_to']}/shared" do
   recursive true
 end
 
-%w{ log pids system }.each do |dir|
+%w{ log pids system .bundle }.each do |dir|
 
   directory "#{app['deploy_to']}/shared/#{dir}" do
     owner app['owner']
@@ -167,12 +167,33 @@ deploy_revision app['id'] do
   group app['group']
   deploy_to app['deploy_to']
   environment 'RAILS_ENV' => node.app_environment
-  action app['force'][node.app_environment] ? :force_deploy : :deploy
+
+  if node.role?("#{app['id']}_force_deploy")
+    action :force_deploy
+  elsif app['force'][node.app_environment]
+    action :force_deploy
+  else
+    action :deploy
+  end
+
   ssh_wrapper "#{app['deploy_to']}/deploy-ssh-wrapper" if app['deploy_key']
 
   before_migrate do
+    ruby_block "remove_force_deploy" do
+      block do
+        if node.role?("#{app['id']}_force_deploy")
+          Chef::Log.info("Started deploy, removing role[#{app['id']}_force_deploy]")
+          node.run_list.remove("role[#{app['id']}_force_deploy]")
+        end
+      end
+    end
+
     if app['gems'].has_key?('bundler')
-      execute "bundle install" do
+      link "#{release_path}/.bundle" do
+        to "#{app['deploy_to']}/shared/.bundle"
+      end
+
+      execute "bundle install --path .bundle -–disable-shared-gems -–without test" do
         ignore_failure true
         cwd release_path
       end
