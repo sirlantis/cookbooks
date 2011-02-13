@@ -32,6 +32,9 @@ include_recipe "apache2"
   end
 end
 
+gem_package "rake"
+gem_package "rack"
+
 execute "passenger_apache2_module" do
   command "#{node[:passenger_enterprise][:root_path]}/bin/passenger-install-apache2-module -a"
   creates node[:passenger_enterprise][:module_path]
