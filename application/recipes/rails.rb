@@ -73,7 +73,7 @@ directory "#{app['deploy_to']}/shared" do
   recursive true
 end
 
-%w{ log pids system .bundle }.each do |dir|
+%w{ log pids system vendor_bundle }.each do |dir|
 
   directory "#{app['deploy_to']}/shared/#{dir}" do
     owner app['owner']
@@ -189,11 +189,11 @@ deploy_revision app['id'] do
     end
 
     if app['gems'].has_key?('bundler')
-      link "#{release_path}/.bundle" do
-        to "#{app['deploy_to']}/shared/.bundle"
+      link "#{release_path}/vendor/bundle" do
+        to "#{app['deploy_to']}/shared/vendor_bundle"
       end
-
-      execute "bundle install --path .bundle -–disable-shared-gems -–without test" do
+      common_groups = %w{development test cucumber staging production}
+      execute "bundle install --deployment --without #{(common_groups -([node.app_environment])).join(' ')}" do
         ignore_failure true
         cwd release_path
       end
