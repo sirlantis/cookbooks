@@ -1,0 +1,42 @@
+{
+  "recipes": {
+    "jenkins": "Installs and configures Jenkins"
+  },
+  "attributes": {
+  },
+  "conflicting": {
+  },
+  "dependencies": {
+    "java": [
+
+    ],
+    "apache2": [
+
+    ]
+  },
+  "providing": {
+  },
+  "maintainer": "NorthDocks UG",
+  "long_description": "",
+  "replacing": {
+  },
+  "platforms": {
+    "debian": [
+
+    ],
+    "ubuntu": [
+
+    ]
+  },
+  "license": "Apache 2.0",
+  "version": "0.1.0",
+  "maintainer_email": "info@northdocks.com",
+  "groupings": {
+  },
+  "recommendations": {
+  },
+  "name": "jenkins",
+  "description": "Installs and configures Jenkins (former Hudson)",
+  "suggestions": {
+  }
+}

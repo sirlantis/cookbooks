@@ -1,0 +1,17 @@
+<VirtualHost *:80>
+  <% if node[:jenkins][:virtual_host_name] -%>
+  ServerName <%= node[:jenkins][:virtual_host_name] %>
+  <% end -%>
+
+  ErrorLog <%= node[:apache][:log_dir] %>/jenkins-error.log
+  TransferLog <%= node[:apache][:log_dir] %>/jenkins-access.log
+
+  <Proxy <%= @endpoint %>/*>
+    Order deny,allow
+    Allow from all
+  </Proxy>
+
+  ProxyPass         /  <%= @endpoint %>/
+  ProxyPassReverse  /  <%= @endpoint %>/
+  ProxyRequests     Off
+</VirtualHost>
