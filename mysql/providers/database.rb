@@ -21,8 +21,8 @@ action :create_db do
 end
 
 def load_current_resource
-  @mysqldb.close rescue nil
-  @mysqldb = nil
+  @@db.close rescue nil
+  @@db = nil
   @mysqldb = Chef::Resource::MysqlDatabase.new(new_resource.name)
   @mysqldb.database(new_resource.database)
   exists = db.list_dbs.include?(new_resource.database)
